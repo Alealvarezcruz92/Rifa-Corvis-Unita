@@ -32,7 +32,7 @@
   .premio { text-align: center; font-size: 28px; font-weight: bold; color: var(--accent); margin: 0 0 4px; }
   .info { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
     font-size: 13px; color: var(--muted); margin-bottom: 20px; }
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
   .stat { text-align: center; padding: 10px 4px; border: 1px solid var(--line); border-radius: 10px; }
   .stat b { display: block; font-size: 20px; color: var(--accent); }
   .stat span { font-size: 12px; color: var(--muted); }
@@ -87,7 +87,6 @@
 
   <div class="stats">
     <div class="stat"><b id="vendidas">–</b><span>Vendidas</span></div>
-    <div class="stat"><b id="apartadas">–</b><span>Apartadas</span></div>
     <div class="stat"><b id="disponibles">–</b><span>Disponibles</span></div>
   </div>
   <div class="bar"><div id="barra"></div></div>
@@ -97,7 +96,6 @@
   <div class="legend">
     <span><i style="background:var(--sold)"></i>Pagada</span>
     <span><i style="background:var(--free)"></i>Disponible</span>
-    <span><i style="background:repeating-linear-gradient(45deg,var(--free),var(--free) 3px,var(--line) 3px,var(--line) 6px)"></i>Apartada</span>
   </div>
   <p class="stamp" id="stamp"></p>
   <p class="foot">Vende tu número, tómale pantallazo y comparte.</p>
@@ -145,23 +143,24 @@
   function pintar(estados) {
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
-    let pagadas = 0, apartadas = 0;
+    let pagadas = 0;
     for (let k = 0; k < TOTAL; k++) {
       const num = String(k).padStart(2, "0");
       const estado = (estados[num] || "Disponible").toLowerCase();
       const div = document.createElement("div");
       div.className = "n";
-      if (estado === "pagada") div.classList.add("pagada");
-      else if (estado === "apartada") div.classList.add("apartada");
-      div.innerHTML = '<span class="num">' + num + '</span>';
-      if (estado === "pagada") { pagadas++; div.innerHTML += '<span class="x">✕</span>'; }
-      else if (estado === "apartada") apartadas++;
+      // Solo "pagada" se muestra como vendida; cualquier otro estado se ve como disponible
+      if (estado === "pagada") {
+        div.classList.add("pagada");
+        pagadas++;
+        div.innerHTML = '<span class="num">' + num + '</span><span class="x">✕</span>';
+      } else {
+        div.innerHTML = '<span class="num">' + num + '</span>';
+      }
       grid.appendChild(div);
     }
-    const disp = TOTAL - pagadas - apartadas;
     document.getElementById("vendidas").textContent = pagadas;
-    document.getElementById("apartadas").textContent = apartadas;
-    document.getElementById("disponibles").textContent = disp;
+    document.getElementById("disponibles").textContent = TOTAL - pagadas;
     document.getElementById("barra").style.width = (pagadas / TOTAL * 100) + "%";
     document.getElementById("stamp").textContent =
       "Actualizado: " + new Date().toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" });
