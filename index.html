@@ -75,9 +75,6 @@
 <body>
 <div class="card">
   <img class="logo" src="logo.jpeg" alt="Corvis Unita">
-  <p class="sub">Sorteo: <span id="sorteo"></span></p>
-  <p class="premio" id="premio"></p>
-  <div class="info"><span>Boleta: <span id="precio"></span></span><span>Números del 00 al 99</span></div>
 
   <div class="promo">
     <h2>🎄 ¡Adelanta tu prima! 🎄</h2>
@@ -121,9 +118,6 @@
   const TOTAL = 100;
   /* ============================ */
 
-  document.getElementById("sorteo").textContent = SORTEO;
-  document.getElementById("premio").textContent = PREMIO;
-  document.getElementById("precio").textContent = PRECIO;
 
   // Parser CSV simple (maneja comillas)
   function parseCSV(text) {
