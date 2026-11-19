@@ -57,15 +57,37 @@
   .foot { text-align: center; font-size: 12px; color: var(--muted); margin-top: 16px; }
   .msg { grid-column: 1 / -1; text-align: center; color: var(--muted); font-size: 14px; padding: 20px 0; }
   .stamp { text-align: center; font-size: 11px; color: var(--muted); margin-top: 8px; }
+  .promo {
+    text-align: center; padding: 16px; margin-bottom: 20px; border-radius: 12px;
+    background: var(--free); border: 1px solid var(--line);
+  }
+  .promo h2 { font-size: 18px; margin: 0 0 8px; color: var(--accent); }
+  .promo p { margin: 4px 0; font-size: 14px; }
+  .promo .big { font-size: 22px; font-weight: bold; margin: 6px 0; }
+  .btn {
+    margin-top: 10px; padding: 10px 16px; border: none; border-radius: 8px; cursor: pointer;
+    background: var(--accent); color: var(--surface); font-size: 14px; font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .btn.ok { background: #16a34a; }
 </style>
 </head>
 <body>
 <div class="card">
-  <img class="logo" src="logo.jpeg" alt="Corvis Unita">
+  <img class="logo" src="logo.png" alt="Corvis Unita">
   <h1>Rifa Lotería del Valle</h1>
   <p class="sub">Sorteo: <span id="sorteo"></span></p>
   <p class="premio" id="premio"></p>
   <div class="info"><span>Boleta: <span id="precio"></span></span><span>Números del 00 al 99</span></div>
+
+  <div class="promo">
+    <h2>🎄 ¡Adelanta tu prima! 🎄</h2>
+    <p class="big">Gana $500.000</p>
+    <p>el próximo <b>25 de noviembre</b></p>
+    <p>Empieza la Navidad con toda, con el dinero en tu bolsillo ✨</p>
+    <p>📺 El ganador se define con los resultados de la <b>Lotería del Valle</b>.</p>
+    <p>Solo 100 boletas · del 00 al 99</p>
+  </div>
 
   <div class="stats">
     <div class="stat"><b id="vendidas">–</b><span>Vendidas</span></div>
@@ -83,6 +105,9 @@
   </div>
   <p class="stamp" id="stamp"></p>
   <p class="foot">Vende tu número, tómale pantallazo y comparte.</p>
+  <div style="text-align:center;margin-top:16px;">
+    <button class="btn" id="btnCopiar" onclick="copiarTexto()">Copiar texto para compartir</button>
+  </div>
 </div>
 
 <script>
@@ -90,7 +115,7 @@
   // Publica SOLO la hoja "Publico" como CSV en Google Sheets
   // (Archivo > Compartir > Publicar en la web > hoja Publico > CSV)
   // y pega el link aquí:
-  const CSV_URL = "PEGA_AQUI_EL_LINK_CSV_DE_LA_HOJA_PUBLICO";
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSveV9gXH_6exWllog4_o7OVVS6Pnd3dPHBbMeXb9SY0smUATuoXX7K0gmoFIxgy_dMfNUZVhbC_zwm/pub?gid=1250270770&single=true&output=csv";
   const PREMIO = "$500.000";
   const PRECIO = "$15.000";
   const SORTEO = "25 de noviembre";
@@ -165,6 +190,24 @@
       pintar({});
       document.getElementById("stamp").textContent = "No se pudo actualizar. Revisa el link del CSV.";
     }
+  }
+
+  // Copia el texto para compartir por WhatsApp o redes
+  function copiarTexto() {
+    const link = location.href;
+    const texto =
+      "🎄 ¡Adelanta tu prima con Corvis Unita! 🎄\n\n" +
+      "💰 Gana $500.000 el próximo 25 de noviembre\n" +
+      "🎟️ Boleta de $15.000 · Solo 100 números (del 00 al 99)\n\n" +
+      "Empieza la Navidad con toda, con el dinero en tu bolsillo ✨\n\n" +
+      "📺 El ganador se define con los resultados de la Lotería del Valle.\n\n" +
+      "👀 Mira en vivo cómo va la rifa: " + link;
+    navigator.clipboard.writeText(texto).then(() => {
+      const b = document.getElementById("btnCopiar");
+      b.textContent = "¡Texto copiado!";
+      b.classList.add("ok");
+      setTimeout(() => { b.textContent = "Copiar texto para compartir"; b.classList.remove("ok"); }, 2000);
+    }).catch(() => alert("No se pudo copiar. Selecciona el texto manualmente."));
   }
 
   // Muestra las 100 boletas de inmediato, sin esperar al CSV
